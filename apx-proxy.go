@@ -1,0 +1,21 @@
+package main
+
+import (
+    "net/http"
+    "net/http/httputil"
+    "net/url"
+)
+
+func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
+    url, _ := url.Parse("http://20.20.20.15") 
+    proxy := httputil.NewSingleHostReverseProxy(url)
+    proxy.ServeHTTP(res, req)
+}
+
+func main() {
+    http.HandleFunc("/", handleRequestAndRedirect)
+    if err := http.ListenAndServe(":9060", nil); err != nil {
+        panic(err)
+    }
+}
+
